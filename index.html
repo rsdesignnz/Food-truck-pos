@@ -88,14 +88,17 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 </section>
 
 <section id="reports" class="view">
-<h1>Today</h1>
+<div class="row wrap"><h1>Reports</h1><button class="secondary" onclick="renderReports()">Refresh</button></div>
 <div class="grid">
-<div class="card"><div class="muted">Sales</div><div class="kpi" id="todaySales">$0.00</div></div>
-<div class="card"><div class="muted">Orders</div><div class="kpi" id="todayOrders">0</div></div>
+<div class="card"><div class="muted">Today’s sales</div><div class="kpi" id="todaySales">$0.00</div></div>
+<div class="card"><div class="muted">Today’s orders</div><div class="kpi" id="todayOrders">0</div></div>
+<div class="card"><div class="muted">Average order</div><div class="kpi" id="todayAverage">$0.00</div></div>
+<div class="card"><div class="muted">Items sold</div><div class="kpi" id="todayItems">0</div></div>
 </div>
-<div class="card" style="margin-top:16px">
-<h2>Payment methods</h2><div id="paymentSummary"></div>
-</div>
+<div class="card" style="margin-top:16px"><h2>Today’s payments</h2><div id="paymentSummary"></div></div>
+<div class="card" style="margin-top:16px"><h2>Top items today</h2><div id="topItemsToday"></div></div>
+<div class="card" style="margin-top:16px"><div class="row wrap"><h2 style="margin:0">Daily transaction log</h2><div class="row wrap"><label class="muted" style="font-size:14px">View date</label><input id="reportDate" type="date" onchange="renderDailyLog()" style="padding:10px;border:1px solid #d1d5db;border-radius:10px"></div></div><div id="dailyLog" style="margin-top:12px"></div></div>
+<div class="card" style="margin-top:16px"><h2>All-time analytics</h2><div id="analyticsSummary"></div></div>
 </section>
 
 <section id="settings" class="view">
@@ -106,7 +109,7 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 <button class="primary" onclick="saveBusiness()">Save</button>
 </div>
 <div class="card" style="margin-top:16px">
-<h2>Products</h2>
+<h2>Products</h2><p class="muted">Add new menu items below, or edit existing items directly in the list.</p>
 <div class="field"><label>Product name</label><input id="newName" placeholder="e.g. Steak burger"></div>
 <div class="field"><label>Price ($)</label><input id="newPrice" type="number" step="0.01" placeholder="12.50"></div>
 <div class="field"><label>Category</label><input id="newCategory" placeholder="Food"></div>
@@ -144,7 +147,7 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 <nav class="nav">
 <button class="active" data-view="sell" onclick="showView('sell')"><span>＋</span>Sell</button>
 <button data-view="orders" onclick="showView('orders')"><span>☰</span>Orders</button>
-<button data-view="reports" onclick="showView('reports')"><span>▣</span>Today</button>
+<button data-view="reports" onclick="showView('reports')"><span>▣</span>Reports</button>
 <button data-view="settings" onclick="showView('settings')"><span>⚙</span>Settings</button>
 </nav>
 </div>
@@ -215,13 +218,15 @@ function renderOrders(){
  </div>`).join('')
 }
 function setOrderStatus(id,status){const o=data.orders.find(x=>x.id===id);if(o){o.status=status;save();renderOrders()}}
-function renderReports(){
- const key=todayKey(), orders=data.orders.filter(o=>new Date(o.date).toLocaleDateString('en-CA')===key);
- document.getElementById('todaySales').textContent=money(orders.reduce((s,o)=>s+o.total,0));
- document.getElementById('todayOrders').textContent=orders.length;
- const methods={};orders.forEach(o=>methods[o.paymentMethod]=(methods[o.paymentMethod]||0)+o.total);
- document.getElementById('paymentSummary').innerHTML=Object.keys(methods).length?Object.entries(methods).map(([m,v])=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>${esc(m)}</span><strong>${money(v)}</strong></div>`).join(''):'<div class="empty">No payments today.</div>';
-}
+function reportOrdersForDate(k){return data.orders.filter(o=>new Date(o.date).toLocaleDateString('en-CA')===k)}
+function topItems(orders){const m={};orders.forEach(o=>o.items.forEach(i=>{if(!m[i.name])m[i.name]={name:i.name,qty:0,revenue:0};m[i.name].qty+=i.qty;m[i.name].revenue+=i.qty*i.price}));return Object.values(m).sort((a,b)=>b.qty-a.qty||b.revenue-a.revenue)}
+function dateLabel(k){return new Date(k+'T12:00:00').toLocaleDateString('en-NZ',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}
+function renderReports(){const k=todayKey(),os=reportOrdersForDate(k),t=os.reduce((s,o)=>s+o.total,0),items=os.reduce((s,o)=>s+o.items.reduce((a,i)=>a+i.qty,0),0);document.getElementById('reportDate').value=k;document.getElementById('todaySales').textContent=money(t);document.getElementById('todayOrders').textContent=os.length;document.getElementById('todayAverage').textContent=money(os.length?t/os.length:0);document.getElementById('todayItems').textContent=items;const m={};os.forEach(o=>m[o.paymentMethod]=(m[o.paymentMethod]||0)+o.total);document.getElementById('paymentSummary').innerHTML=Object.keys(m).length?Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([x,v])=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span>${esc(x)}</span><strong>${money(v)}</strong></div>`).join(''):'<div class="empty">No payments today.</div>';const ti=topItems(os);document.getElementById('topItemsToday').innerHTML=ti.length?ti.slice(0,8).map((x,i)=>`<div class="row" style="padding:9px 0;border-bottom:1px solid var(--line)"><span><strong>${i+1}. ${esc(x.name)}</strong><br><span class="muted">${x.qty} sold</span></span><strong>${money(x.revenue)}</strong></div>`).join(''):'<div class="empty">No items sold today.</div>';renderDailyLog();renderAllTimeAnalytics()}
+function renderDailyLog(){const k=document.getElementById('reportDate').value||todayKey(),os=reportOrdersForDate(k),t=os.reduce((s,o)=>s+o.total,0),m={};os.forEach(o=>m[o.paymentMethod]=(m[o.paymentMethod]||0)+o.total);const html=os.length?`<div class="row wrap" style="margin-bottom:12px"><strong>${dateLabel(k)}</strong><div class="row wrap"><button class="secondary" onclick="printDayReport('${k}')">🖨 Print / PDF</button><button class="secondary" onclick="shareDayReport('${k}')">↗ Share</button></div></div><div class="card" style="background:#fafafa;margin-bottom:12px"><div class="row"><span>Orders</span><strong>${os.length}</strong></div><div class="row"><span>Total sales</span><strong>${money(t)}</strong></div>${['Cash','EFTPOS','Bank transfer','Other'].map(x=>`<div class="row"><span>${x}</span><strong>${money(m[x]||0)}</strong></div>`).join('')}</div>${os.slice().reverse().map(o=>`<div class="order"><div class="order-head"><div><strong>Order #${o.number}</strong><div class="muted">${new Date(o.date).toLocaleTimeString('en-NZ',{hour:'2-digit',minute:'2-digit'})}</div></div><div><span class="badge paid">${esc(o.paymentMethod)}</span> <strong>${money(o.total)}</strong></div></div><div class="order-items">${o.items.map(i=>`${i.qty} × ${esc(i.name)} — ${money(i.qty*i.price)}`).join('<br>')}${o.note?`<br><em>Note: ${esc(o.note)}</em>`:''}</div></div>`).join('')}`:'<div class="empty">No transactions for this date.</div>';document.getElementById('dailyLog').innerHTML=html}
+function renderAllTimeAnalytics(){const os=data.orders,t=os.reduce((s,o)=>s+o.total,0),days=[...new Set(os.map(o=>new Date(o.date).toLocaleDateString('en-CA')))],avg=os.length?t/os.length:0,da=days.map(k=>{const x=reportOrdersForDate(k),z=x.reduce((s,o)=>s+o.total,0);return{date:k,avg:z/x.length}}).sort((a,b)=>b.avg-a.avg),ti=topItems(os);document.getElementById('analyticsSummary').innerHTML=`<div class="row" style="padding:9px 0"><span>Total sales</span><strong>${money(t)}</strong></div><div class="row" style="padding:9px 0"><span>Total orders</span><strong>${os.length}</strong></div><div class="row" style="padding:9px 0"><span>Average order spend</span><strong>${money(avg)}</strong></div><div class="row" style="padding:9px 0"><span>Trading days recorded</span><strong>${days.length}</strong></div><hr><h3>Best average-order days</h3>${da.slice(0,5).map(x=>`<div class="row" style="padding:8px 0"><span>${dateLabel(x.date)}</span><strong>${money(x.avg)}</strong></div>`).join('')||'<div class="muted">No data yet.</div>'}<hr><h3>Best-selling items</h3>${ti.slice(0,10).map((x,i)=>`<div class="row" style="padding:8px 0"><span>${i+1}. ${esc(x.name)} <span class="muted">(${x.qty})</span></span><strong>${money(x.revenue)}</strong></div>`).join('')||'<div class="muted">No data yet.</div>'}`}
+function buildDayReportText(k){const os=reportOrdersForDate(k),t=os.reduce((s,o)=>s+o.total,0),m={};os.forEach(o=>m[o.paymentMethod]=(m[o.paymentMethod]||0)+o.total);let x=`${data.businessName}\nEND OF DAY REPORT\n${dateLabel(k)}\n\nOrders: ${os.length}\nTotal sales: ${money(t)}\n\nPAYMENTS\n`;['Cash','EFTPOS','Bank transfer','Other'].forEach(a=>x+=`${a}: ${money(m[a]||0)}\n`);x+='\nTRANSACTIONS\n';os.slice().reverse().forEach(o=>{x+=`#${o.number} ${new Date(o.date).toLocaleTimeString('en-NZ',{hour:'2-digit',minute:'2-digit'})} — ${money(o.total)} — ${o.paymentMethod}\n`;o.items.forEach(i=>x+=`  ${i.qty} × ${i.name}\n`)});return x}
+function printDayReport(k){const os=reportOrdersForDate(k),t=os.reduce((s,o)=>s+o.total,0),m={};os.forEach(o=>m[o.paymentMethod]=(m[o.paymentMethod]||0)+o.total);const ti=topItems(os),w=window.open('','_blank');if(!w){alert('Please allow pop-ups for printing.');return}w.document.write(`<html><head><title>End of Day Report</title><style>body{font-family:Arial;padding:30px;max-width:800px;margin:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}.right{text-align:right}</style></head><body><h1>${esc(data.businessName)}</h1><h2>End of Day Report</h2><p>${dateLabel(k)}</p><h3>Summary</h3><table><tr><td>Orders</td><td class="right">${os.length}</td></tr><tr><td>Total sales</td><td class="right">${money(t)}</td></tr></table><h3>Payments</h3><table>${['Cash','EFTPOS','Bank transfer','Other'].map(a=>`<tr><td>${a}</td><td class="right">${money(m[a]||0)}</td></tr>`).join('')}</table><h3>Items sold</h3><table><tr><th>Item</th><th>Qty</th><th class="right">Sales</th></tr>${ti.map(i=>`<tr><td>${esc(i.name)}</td><td>${i.qty}</td><td class="right">${money(i.revenue)}</td></tr>`).join('')}</table><h3>Transactions</h3><table><tr><th>Order</th><th>Items</th><th>Payment</th><th class="right">Total</th></tr>${os.slice().reverse().map(o=>`<tr><td>#${o.number}</td><td>${o.items.map(i=>`${i.qty} × ${esc(i.name)}`).join('<br>')}</td><td>${esc(o.paymentMethod)}</td><td class="right">${money(o.total)}</td></tr>`).join('')}</table><script>window.onload=()=>window.print();<\/script></body></html>`);w.document.close()}
+async function shareDayReport(k){const text=buildDayReportText(k);if(navigator.share){try{await navigator.share({title:`${data.businessName} — ${dateLabel(k)}`,text})}catch(e){}}else{try{await navigator.clipboard.writeText(text);alert('Report copied. You can paste it into Messages or Email.')}catch(e){alert(text)}}}
 function saveBusiness(){const v=document.getElementById('businessName').value.trim();if(v){data.businessName=v;save();renderSell();alert('Saved.')}}
 function addProduct(){
  const name=document.getElementById('newName').value.trim(), price=Number(document.getElementById('newPrice').value), category=document.getElementById('newCategory').value.trim()||'Other';
@@ -230,10 +235,8 @@ function addProduct(){
  document.getElementById('newName').value='';document.getElementById('newPrice').value='';renderSettings();renderSell()
 }
 function deleteProduct(id){if(confirm('Delete this product? Existing orders will not be changed.')){data.products=data.products.filter(p=>p.id!==id);save();renderSettings();renderSell()}}
-function renderSettings(){
- document.getElementById('businessName').value=data.businessName;
- document.getElementById('productSettings').innerHTML=data.products.map(p=>`<div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span><strong>${esc(p.name)}</strong><br><span class="muted">${esc(p.category)} · ${money(p.price)}</span></span><button class="danger" onclick="deleteProduct('${p.id}')">Delete</button></div>`).join('');
-}
+function renderSettings(){document.getElementById('businessName').value=data.businessName;document.getElementById('productSettings').innerHTML=data.products.length?data.products.map(p=>`<div class="card" style="margin:10px 0;padding:12px;background:#fafafa"><div class="field"><label>Product name</label><input id="editName_${p.id}" value="${esc(p.name)}"></div><div class="row"><div class="field" style="flex:1"><label>Price ($)</label><input id="editPrice_${p.id}" type="number" step="0.01" value="${p.price}"></div><div class="field" style="flex:1"><label>Category</label><input id="editCategory_${p.id}" value="${esc(p.category)}"></div></div><div class="row"><button class="primary" style="width:auto" onclick="updateProduct('${p.id}')">Save changes</button><button class="danger" onclick="deleteProduct('${p.id}')">Delete</button></div></div>`).join(''):'<div class="empty">No products yet.</div>'}
+function updateProduct(id){const p=data.products.find(x=>x.id===id);if(!p)return;const n=document.getElementById('editName_'+id).value.trim(),v=Number(document.getElementById('editPrice_'+id).value),c=document.getElementById('editCategory_'+id).value.trim()||'Other';if(!n||!Number.isFinite(v)||v<0){alert('Please enter a product name and valid price.');return}p.name=n;p.price=v;p.category=c;save();renderSettings();renderSell();alert('Product updated.')}
 function exportData(){
  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`pos-backup-${todayKey()}.json`;a.click();URL.revokeObjectURL(a.href)
 }
