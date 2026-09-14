@@ -1,13 +1,269 @@
-<!doctype html><html lang="en-NZ"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Simple POS"><meta name="theme-color" content="#f5f5f2"><link rel="manifest" href="manifest.json"><title>Simple POS</title><style>
-:root{--bg:#f5f5f2;--card:#fff;--text:#202124;--muted:#70757a;--line:#e4e4df;--dark:#202124;--green:#18794e;--red:#b42318}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select{font:inherit}button{cursor:pointer}.app{max-width:1200px;margin:auto;min-height:100vh}header{position:sticky;top:0;z-index:20;background:#f5f5f2f5;backdrop-filter:blur(12px);padding:15px 18px 10px;border-bottom:1px solid var(--line)}.head{display:flex;justify-content:space-between;align-items:center;gap:10px}h1{margin:0;font-size:24px}.date,.muted{color:var(--muted)}.date{font-size:13px;margin-top:2px}nav{display:flex;gap:6px;overflow:auto;margin-top:12px}nav button{border:0;background:none;color:var(--muted);padding:10px 13px;border-radius:12px;font-weight:700;white-space:nowrap}nav button.active{background:var(--dark);color:white}main{padding:18px}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(310px,.85fr);gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 3px 18px #0000000a}h2{font-size:18px;margin:0 0 14px}h3{font-size:15px;margin:0 0 10px}.categories{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.categories button{border:1px solid var(--line);background:white;border-radius:999px;padding:10px 14px;white-space:nowrap}.categories .active{background:#ecece8;font-weight:700}.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.menu button{min-height:92px;text-align:left;background:white;border:1px solid var(--line);border-radius:15px;padding:13px;font-weight:700;display:flex;flex-direction:column;justify-content:space-between}.price{font-weight:800}.cart{display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow:auto}.cartrow{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid var(--line);padding-bottom:10px}.qty{display:flex;gap:6px;align-items:center;margin-top:7px}.qty button,.icon{width:32px;height:32px;border:1px solid var(--line);background:#f7f7f5;border-radius:9px}.total{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}.line{display:flex;justify-content:space-between;padding:5px 0}.grand{font-size:22px;font-weight:800}.btn{border:0;border-radius:13px;padding:12px 15px;font-weight:750;min-height:46px}.primary{background:var(--dark);color:white}.secondary{background:#ededeb}.success{background:var(--green);color:white}.danger{background:#fff1f0;color:var(--red)}.ghost{background:transparent;border:1px solid var(--line)}.full{width:100%}.actions{display:flex;gap:8px;flex-wrap:wrap}.notice{padding:11px 13px;background:#f1f3f4;border-radius:12px;color:#4b5563;font-size:13px;margin-bottom:12px}.statgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:#f7f7f5;border-radius:15px;padding:14px}.value{font-size:23px;font-weight:800;margin-top:4px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:14px}.table th,.table td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);white-space:nowrap}.table th{font-size:12px;color:var(--muted);text-transform:uppercase}.empty{text-align:center;color:var(--muted);padding:28px 10px}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.modalbg{display:none;position:fixed;inset:0;background:#0006;z-index:50;align-items:flex-end;justify-content:center;padding:12px}.modalbg.show{display:flex}.modal{width:min(680px,100%);max-height:90vh;overflow:auto;background:white;border-radius:22px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:13px;font-weight:700}input,select{width:100%;min-height:44px;border:1px solid #d7d7d2;border-radius:11px;padding:11px;background:white}.paygrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}.pay{padding:15px;border:1px solid var(--line);background:white;border-radius:14px;font-weight:750}.pay.active{border:2px solid var(--dark);background:#f1f2f2}@media(max-width:850px){.grid{grid-template-columns:1fr}.menu{grid-template-columns:repeat(2,1fr)}.statgrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){main{padding:12px}.card{padding:14px}.form{grid-template-columns:1fr}.menu{grid-template-columns:repeat(2,1fr)}}@media print{header,.no-print,.modalbg{display:none!important}.page{display:none!important}.page.printme{display:block!important}main{padding:0}.card{box-shadow:none;border:0;padding:0}}
-</style></head><body><div class="app"><header class="no-print"><div class="head"><div><h1>Simple POS</h1><div class="date" id="dateLabel"></div></div><button class="btn secondary" onclick="newSale()">New sale</button></div><nav id="nav"><button class="active" data-page="sale">Sale</button><button data-page="orders">Orders</button><button data-page="daily">Daily Log</button><button data-page="reports">Reports</button><button data-page="menuPage">Menu</button><button data-page="settings">Settings</button></nav></header><main>
-<section id="sale" class="page active"><div class="grid"><div class="card"><h2>Take an order</h2><div id="cats" class="categories"></div><div id="menu" class="menu"></div></div><div class="card"><h2>Current order</h2><div id="cart"></div><div class="total"><div class="line"><span>Items</span><b id="count">0</b></div><div class="line grand"><span>Total</span><span id="total">$0.00</span></div></div><div class="actions" style="margin-top:12px"><button class="btn secondary" style="flex:1" onclick="saveOpen()">Save order</button><button class="btn primary" style="flex:1" onclick="payment()">Take payment</button></div><button class="btn ghost full" style="margin-top:8px" onclick="clearCart()">Clear order</button></div></div></section>
-<section id="orders" class="page"><div class="card"><h2>Open orders</h2><div class="notice">Saved orders have not had payment recorded yet.</div><div id="openOrders"></div></div></section>
-<section id="daily" class="page"><div class="card"><div class="head"><h2>Daily transactions</h2><div class="actions"><input id="day" type="date" style="width:auto" onchange="daily()"><button class="btn secondary" onclick="printDaily()">Print / Share</button></div></div><div id="dailyReport"></div></div></section>
-<section id="reports" class="page"><div class="card"><div class="head"><h2>Reports & analytics</h2><select id="range" style="width:auto" onchange="reports()"><option value="7">Last 7 days</option><option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 12 months</option></select></div><div id="stats" class="statgrid"></div><div style="height:18px"></div><div class="form"><div class="card" style="box-shadow:none;background:#f8f8f6"><h3>Top-selling items</h3><div id="top"></div></div><div class="card" style="box-shadow:none;background:#f8f8f6"><h3>Payment methods</h3><div id="payments"></div></div></div><div style="height:12px"></div><div class="card" style="box-shadow:none;background:#f8f8f6"><h3>Daily performance</h3><div class="tablewrap"><table class="table"><thead><tr><th>Date</th><th>Orders</th><th>Sales</th><th>Avg order</th></tr></thead><tbody id="performance"></tbody></table></div></div></div></section>
-<section id="menuPage" class="page"><div class="card"><div class="head"><h2>Menu</h2><button class="btn primary" onclick="editMenu()">Add item</button></div><div class="notice">Edit names, prices and categories any time. Hide items temporarily without deleting them.</div><div id="manager"></div></div></section>
-<section id="settings" class="page"><div class="card"><h2>Settings & backup</h2><div class="notice"><b>Offline:</b> sales are stored on this iPad. This app records EFTPOS payments but does not process card payments.</div><div class="row"><div><b>Business name</b></div><input id="business" style="max-width:260px" onchange="saveBusiness()"></div><div class="row"><div><b>Export backup</b><div class="muted">Menu + sales data</div></div><button class="btn secondary" onclick="backup()">Export backup</button></div><div class="row"><div><b>Import backup</b></div><button class="btn secondary" onclick="file.click()">Import backup</button></div><div class="row"><div><b>Print today's report</b></div><button class="btn secondary" onclick="printDaily()">Print report</button></div><div class="row"><div><b>Clear all sales</b></div><button class="btn danger" onclick="clearSales()">Clear sales</button></div><input id="file" type="file" accept=".json" hidden></div></section>
-</main></div><div class="modalbg" id="modalbg" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
+<!doctype html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f3ef">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Simple POS">
+<link rel="manifest" href="manifest.json">
+<title>Simple POS</title>
+<style>
+:root{--bg:#f4f3ef;--card:#fff;--text:#20211f;--muted:#777a73;--line:#deded8;--accent:#20211f;--good:#2e6b45;--danger:#a13b3b;--radius:16px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{min-height:100vh}
+button,input,select{font:inherit}
+button{border:0;cursor:pointer}
+.app{max-width:1100px;margin:auto;padding:16px 16px 96px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.brand h1{font-size:24px;margin:0 0 3px;font-weight:750}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.status{font-size:12px;padding:7px 10px;border-radius:99px;background:#e9e9e4;color:#555}
+nav{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;position:sticky;top:0;background:var(--bg);z-index:10}
+nav button{background:#e7e6e0;color:#555;padding:11px 14px;border-radius:12px;white-space:nowrap;font-weight:650}
+nav button.active{background:var(--accent);color:white}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;gap:12px}.two{grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr)}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 2px 8px #00000008}
+.card h2,.card h3{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.stat b{display:block;font-size:22px;margin-top:4px}
+.categories{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.pill{background:#e9e8e2;padding:9px 13px;border-radius:99px;white-space:nowrap}.pill.active{background:var(--accent);color:#fff}
+.menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:700px){.menu{grid-template-columns:repeat(2,1fr)}}
+.menu button{min-height:76px;text-align:left;background:#fafaf8;border:1px solid var(--line);border-radius:14px;padding:13px}
+.menu button strong{display:block;font-size:16px}.menu button span{display:block;margin-top:7px;color:var(--muted)}
+.cart-row,.order-row,.menu-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.cart-row:last-child,.order-row:last-child,.menu-row:last-child{border-bottom:0}
+.qty{display:flex;align-items:center;gap:8px}.qty button,.iconbtn{width:34px;height:34px;border-radius:10px;background:#e9e8e2}
+.total{display:flex;justify-content:space-between;font-size:20px;font-weight:750;padding-top:14px}
+.primary{width:100%;background:var(--accent);color:#fff;padding:14px;border-radius:13px;font-weight:700;margin-top:10px}
+.secondary{background:#e9e8e2;padding:11px 13px;border-radius:11px;font-weight:650}
+.danger{background:#f5dfdf;color:var(--danger);padding:10px 12px;border-radius:10px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}.field label{font-size:13px;color:var(--muted);font-weight:650}
+input,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fff}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:12px}
+.table-wrap{overflow:auto}
+.badge{display:inline-block;padding:5px 8px;border-radius:8px;background:#ecebe6;font-size:12px}
+.notice{padding:12px;border-radius:12px;background:#f0efe9;margin-bottom:12px}
+.empty{text-align:center;padding:28px;color:var(--muted)}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;justify-content:center;z-index:50}.modal.show{display:flex}
+.sheet{background:var(--card);width:min(600px,100%);border-radius:22px 22px 0 0;padding:20px;max-height:90vh;overflow:auto}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pay-grid button{padding:18px;border:2px solid var(--line);border-radius:14px;background:#fff;font-weight:700}.pay-grid button.selected{border-color:var(--accent);background:#eee}
+.print-only{display:none}
+@media print{
+ body{background:#fff}.app{max-width:none;padding:0}.no-print,nav,header{display:none!important}
+ .page{display:none!important}.page.active{display:block!important}.print-only{display:block}
+ .card,.stat{box-shadow:none;border:0;padding:0}.table-wrap{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><h1 id="businessTitle">Simple POS</h1><p id="pageSubtitle">Simple sales & payments</p></div>
+  <div id="onlineStatus" class="status">Offline ready</div>
+</header>
+
+<nav class="no-print">
+<button data-page="sale">Sale</button><button data-page="orders">Orders</button><button data-page="daily">Daily Log</button><button data-page="reports">Reports</button><button data-page="menu">Menu</button><button data-page="settings">Settings</button>
+</nav>
+
+<section id="sale" class="page">
+<div class="grid two">
+<div class="card">
+<h2>New sale</h2>
+<div id="saleCategories" class="categories"></div>
+<div id="saleMenu" class="menu"></div>
+</div>
+<div class="card">
+<h2>Current order</h2>
+<div id="cart"></div>
+<div class="total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+<div class="actions no-print">
+<button id="clearCart" class="secondary">Clear</button>
+<button id="saveOrder" class="secondary">Save order</button>
+<button id="payNow" class="primary" style="margin-top:0;flex:1">Take payment</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id="orders" class="page">
+<div class="card"><h2>Open orders</h2><div id="openOrders"></div></div>
+</section>
+
+<section id="daily" class="page">
+<div class="card no-print">
+<div class="actions" style="align-items:end">
+<div class="field" style="margin:0;flex:1"><label>Date</label><input type="date" id="dailyDate"></div>
+<button class="secondary" id="todayBtn">Today</button><button class="secondary" id="printDaily">Print / Share</button>
+</div>
+</div>
+<div id="dailyReport"></div>
+</section>
+
+<section id="reports" class="page">
+<div class="card no-print">
+<div class="actions" style="align-items:end">
+<div class="field" style="margin:0;flex:1"><label>Report period</label>
+<select id="reportRange"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last 365 days</option></select></div>
+</div>
+</div>
+<div id="reportsContent"></div>
+</section>
+
+<section id="menu" class="page">
+<div class="grid two">
+<div class="card"><h2>Menu items</h2><div id="menuList"></div></div>
+<div class="card"><h2 id="menuFormTitle">Add menu item</h2>
+<div class="field"><label>Item name</label><input id="itemName" placeholder="e.g. Cheeseburger"></div>
+<div class="field"><label>Price ($)</label><input id="itemPrice" type="number" min="0" step="0.01" placeholder="12.00"></div>
+<div class="field"><label>Category</label><input id="itemCategory" placeholder="e.g. Mains"></div>
+<div class="actions"><button id="saveItem" class="primary" style="flex:1">Add item</button><button id="cancelEdit" class="secondary" style="display:none">Cancel</button></div>
+</div></div>
+</section>
+
+<section id="settings" class="page">
+<div class="card">
+<h2>Settings & backup</h2>
+<div class="field"><label>Business name</label><input id="businessName"></div>
+<button id="saveBusiness" class="primary">Save business name</button>
+<hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+<h3>Backup</h3><p class="small muted">Sales are stored on this iPad. Export a backup regularly so your records are safe if the browser data is lost.</p>
+<div class="actions"><button id="exportData" class="secondary">Export backup</button><label class="secondary" style="display:inline-flex;align-items:center;cursor:pointer">Import backup<input id="importData" type="file" accept=".json" style="display:none"></label></div>
+<hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+<h3>Data</h3><button id="clearSales" class="danger">Delete all sales & open orders</button>
+</div>
+</section>
+</div>
+
+<div id="paymentModal" class="modal">
+<div class="sheet">
+<div class="actions" style="justify-content:space-between"><h2 style="margin:0">Take payment</h2><button id="closePay" class="iconbtn">×</button></div>
+<p id="payTotal" style="font-size:22px;font-weight:750"></p>
+<div class="pay-grid">
+<button data-method="EFTPOS">EFTPOS</button><button data-method="Cash">Cash</button><button data-method="Bank transfer">Bank transfer</button><button data-method="Other">Other</button>
+</div>
+<button id="recordPayment" class="primary" disabled>Record payment</button>
+</div></div>
+
 <script>
-const KEY="simple-pos-v1";let D=load(),cart=[],cat="All",payMethod="EFTPOS";function load(){try{return JSON.parse(localStorage.getItem(KEY))||defaults()}catch{return defaults()}}function defaults(){return{businessName:"My Business",categories:["Main","Drinks","Extras"],menu:[{id:"1",name:"Example Item",price:10,category:"Main",active:true},{id:"2",name:"Example Drink",price:5,category:"Drinks",active:true}],orders:[],open:[],next:1}}function save(){localStorage.setItem(KEY,JSON.stringify(D))}function money(n){return new Intl.NumberFormat("en-NZ",{style:"currency",currency:"NZD"}).format(n||0)}function dateStr(d=new Date()){let x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)}function fmtDate(s){return new Date(s+"T12:00:00").toLocaleDateString("en-NZ",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}function total(){return cart.reduce((a,x)=>a+x.price*x.qty,0)}function qty(){return cart.reduce((a,x)=>a+x.qty,0)}document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>page(b.dataset.page));function page(p){document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(p).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===p));if(p==="sale")renderSale();if(p==="orders")renderOpen();if(p==="daily"){day.value=dateStr();daily()}if(p==="reports")reports();if(p==="menuPage")renderManager();if(p==="settings")business.value=D.businessName}function newSale(){cart=[];page("sale")}function clearCart(){cart=[];renderSale()}function renderSale(){dateLabel.textContent=new Date().toLocaleDateString("en-NZ",{weekday:"long",day:"numeric",month:"long"});let cs=["All",...D.categories.filter(c=>D.menu.some(m=>m.active&&m.category===c))];if(!cs.includes(cat))cat="All";cats.innerHTML=cs.map(c=>`<button class="${c===cat?"active":""}" onclick="cat='${esc(c)}';renderSale()">${esc(c)}</button>`).join("");let ms=D.menu.filter(m=>m.active&&(cat==="All"||m.category===cat));menu.innerHTML=ms.map(m=>`<button onclick="add('${m.id}')"><span>${esc(m.name)}</span><span class="price">${money(m.price)}</span></button>`).join("")||'<div class="empty">No menu items yet.</div>';document.getElementById("cart").innerHTML=cart.map((x,i)=>`<div class="cartrow"><div><b>${esc(x.name)}</b><div class="muted">${money(x.price)} each</div><div class="qty"><button onclick="chg(${i},-1)">−</button><b>${x.qty}</b><button onclick="chg(${i},1)">+</button></div></div><div><b>${money(x.price*x.qty)}</b><button class="icon" onclick="cart.splice(${i},1);renderSale()">×</button></div></div>`).join("")||'<div class="empty">Tap a menu item to start.</div>';count.textContent=qty();document.getElementById("total").textContent=money(total())}function add(id){let m=D.menu.find(x=>x.id===id),e=cart.find(x=>x.id===id);if(e)e.qty++;else cart.push({id:m.id,name:m.name,price:+m.price,qty:1});renderSale()}function chg(i,n){cart[i].qty+=n;if(cart[i].qty<1)cart.splice(i,1);renderSale()}function saveOpen(){if(!cart.length)return alert("Add at least one item first.");D.open.push({id:String(Date.now()),number:D.next++,createdAt:new Date().toISOString(),items:structuredClone(cart),total:total()});save();cart=[];renderSale();alert("Order saved.")}function renderOpen(){openOrders.innerHTML=D.open.length?D.open.slice().reverse().map(o=>`<div class="row"><div><b>Order #${o.number}</b><div class="muted">${new Date(o.createdAt).toLocaleString("en-NZ")} · ${money(o.total)}</div></div><div class="actions"><button class="btn secondary" onclick="loadOpen('${o.id}')">Open</button><button class="btn success" onclick="payOpen('${o.id}')">Take payment</button><button class="btn danger" onclick="delOpen('${o.id}')">Delete</button></div></div>`).join(""):'<div class="empty">No open orders.</div>'}function loadOpen(id){let o=D.open.find(x=>x.id===id);cart=structuredClone(o.items);D.open=D.open.filter(x=>x.id!==id);save();page("sale")}function payOpen(id){let o=D.open.find(x=>x.id===id);cart=structuredClone(o.items);D.open=D.open.filter(x=>x.id!==id);save();payment(o.number)}function delOpen(id){if(confirm("Delete this open order?")){D.open=D.open.filter(x=>x.id!==id);save();renderOpen()}}function payment(number=null){if(!cart.length)return alert("Add at least one item first.");payMethod="EFTPOS";showPayment(number)}function showPayment(number){modal.innerHTML=`<div class="modalhead"><h2>Take payment</h2><button class="icon" onclick="closeModal()">×</button></div><div class="notice">Collect <b>${money(total())}</b>${number?" · Order #"+number:""}</div><b>Payment method</b><div class="paygrid">${["EFTPOS","Cash","Bank transfer","Other"].map(p=>`<button class="pay ${p===payMethod?"active":""}" onclick="payMethod='${p}';showPayment(${number||"null"})">${p}</button>`).join("")}</div><div class="actions"><button class="btn secondary" style="flex:1" onclick="closeModal()">Cancel</button><button class="btn success" style="flex:1" onclick="complete(${number||"null"})">Record payment</button></div>`;modalbg.classList.add("show")}function complete(number=null){D.orders.push({number:number||D.next++,createdAt:new Date().toISOString(),items:structuredClone(cart),total:total(),payment:payMethod});save();cart=[];closeModal();renderSale();alert("Payment recorded.")}function closeModal(){modalbg.classList.remove("show")}function daily(){let d=day.value,os=D.orders.filter(o=>dateStr(new Date(o.createdAt))===d),sales=os.reduce((a,o)=>a+o.total,0),p={},items={};os.forEach(o=>{p[o.payment]=(p[o.payment]||0)+o.total;o.items.forEach(i=>items[i.name]=(items[i.name]||0)+i.qty)});dailyReport.innerHTML=`<div class="statgrid"><div class="stat"><div class="muted">Orders</div><div class="value">${os.length}</div></div><div class="stat"><div class="muted">Sales</div><div class="value">${money(sales)}</div></div><div class="stat"><div class="muted">Avg order</div><div class="value">${money(os.length?sales/os.length:0)}</div></div><div class="stat"><div class="muted">Items sold</div><div class="value">${os.reduce((a,o)=>a+o.items.reduce((b,i)=>b+i.qty,0),0)}</div></div></div><div style="height:18px"></div><h3>${fmtDate(d)}</h3>${os.length?`<div class="tablewrap"><table class="table"><thead><tr><th>Order</th><th>Time</th><th>Purchased</th><th>Payment</th><th>Total</th></tr></thead><tbody>${os.map(o=>`<tr><td>#${o.number}</td><td>${new Date(o.createdAt).toLocaleTimeString("en-NZ",{hour:"numeric",minute:"2-digit"})}</td><td>${o.items.map(i=>esc(i.name)+" × "+i.qty).join(", ")}</td><td>${esc(o.payment)}</td><td>${money(o.total)}</td></tr>`).join("")}</tbody></table></div><h3 style="margin-top:18px">Payment totals</h3>${Object.entries(p).map(([k,v])=>`<div class="line"><span>${esc(k)}</span><b>${money(v)}</b></div>`).join("")}<h3 style="margin-top:18px">Items sold</h3>${Object.entries(items).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="line"><span>${esc(k)}</span><b>${v}</b></div>`).join("")}`:'<div class="empty">No completed sales for this day.</div>'}function printDaily(){daily();document.getElementById("daily").classList.add("printme");window.print();setTimeout(()=>document.getElementById("daily").classList.remove("printme"),500)}function reports(){let n=+range.value,end=Date.now(),start=end-n*86400000,os=D.orders.filter(o=>new Date(o.createdAt).getTime()>=start),sales=os.reduce((a,o)=>a+o.total,0),items={},pay={},days={};os.forEach(o=>{o.items.forEach(i=>items[i.name]=(items[i.name]||0)+i.qty);pay[o.payment]=(pay[o.payment]||0)+o.total;let d=dateStr(new Date(o.createdAt));days[d]??={orders:0,sales:0};days[d].orders++;days[d].sales+=o.total});stats.innerHTML=[["Sales",money(sales)],["Orders",os.length],["Avg order",money(os.length?sales/os.length:0)],["Items sold",os.reduce((a,o)=>a+o.items.reduce((b,i)=>b+i.qty,0),0)]].map(x=>`<div class="stat"><div class="muted">${x[0]}</div><div class="value">${x[1]}</div></div>`).join("");top.innerHTML=Object.entries(items).sort((a,b)=>b[1]-a[1]).slice(0,10).map((x,i)=>`<div class="line"><span>${i+1}. ${esc(x[0])}</span><b>${x[1]}</b></div>`).join("")||'<div class="muted">No sales yet.</div>';payments.innerHTML=Object.entries(pay).sort((a,b)=>b[1]-a[1]).map(x=>`<div class="line"><span>${esc(x[0])}</span><b>${money(x[1])}</b></div>`).join("")||'<div class="muted">No sales yet.</div>';performance.innerHTML=Object.entries(days).sort((a,b)=>b[0].localeCompare(a[0])).map(x=>`<tr><td>${fmtDate(x[0])}</td><td>${x[1].orders}</td><td>${money(x[1].sales)}</td><td>${money(x[1].sales/x[1].orders)}</td></tr>`).join("")||'<tr><td colspan="4">No sales yet.</td></tr>'}function renderManager(){manager.innerHTML=`<div class="tablewrap"><table class="table"><thead><tr><th>Item</th><th>Price</th><th>Category</th><th>Status</th><th></th></tr></thead><tbody>${D.menu.map(m=>`<tr><td><b>${esc(m.name)}</b></td><td>${money(m.price)}</td><td>${esc(m.category)}</td><td>${m.active?"Active":"Hidden"}</td><td><div class="actions"><button class="btn secondary" onclick="editMenu('${m.id}')">Edit</button><button class="btn ${m.active?"danger":"success"}" onclick="toggle('${m.id}')">${m.active?"Hide":"Show"}</button></div></td></tr>`).join("")}</tbody></table></div>`}function editMenu(id=null){let m=id?D.menu.find(x=>x.id===id):{name:"",price:"",category:"Main"};modal.innerHTML=`<div class="modalhead"><h2>${id?"Edit menu item":"Add menu item"}</h2><button class="icon" onclick="closeModal()">×</button></div><div class="form"><div><label>Item name</label><input id="mn" value="${esc(m.name)}"></div><div><label>Price (NZD)</label><input id="pr" type="number" min="0" step=".01" value="${m.price}"></div></div><div style="margin-top:12px"><label>Category</label><input id="mc" value="${esc(m.category)}"></div><div class="actions" style="margin-top:18px"><button class="btn secondary" style="flex:1" onclick="closeModal()">Cancel</button><button class="btn primary" style="flex:1" onclick="saveMenu('${id||""}')">Save</button></div>`;modalbg.classList.add("show")}function saveMenu(id){let name=mn.value.trim(),price=+pr.value,category=mc.value.trim()||"Main";if(!name||price<0||!Number.isFinite(price))return alert("Enter a valid name and price.");if(id)Object.assign(D.menu.find(x=>x.id===id),{name,price,category});else D.menu.push({id:String(Date.now()),name,price,category,active:true});if(!D.categories.includes(category))D.categories.push(category);save();closeModal();renderManager();renderSale()}function toggle(id){let m=D.menu.find(x=>x.id===id);m.active=!m.active;save();renderManager();renderSale()}function saveBusiness(){D.businessName=business.value.trim()||"My Business";save()}function backup(){let b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=`simple-pos-backup-${dateStr()}.json`;a.click();URL.revokeObjectURL(a.href)}file.onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader;r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.menu||!x.orders)throw 0;if(confirm("Replace current data with this backup?")){D=x;save();renderSale();alert("Backup restored.")}}catch{alert("Invalid backup file.")}file.value=""};r.readAsText(f)}function clearSales(){if(confirm("Clear all completed sales? Export a backup first.")){D.orders=[];D.open=[];save();daily();reports();alert("Sales cleared.")}}renderSale();if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
-</script></body></html>
+const $=id=>document.getElementById(id);
+const KEY="simple-pos-v2";
+const today=()=>new Date().toISOString().slice(0,10);
+const money=n=>new Intl.NumberFormat("en-NZ",{style:"currency",currency:"NZD"}).format(Number(n)||0);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const defaultData=()=>({businessName:"My Business",menu:[
+{id:"1",name:"Example Burger",price:10,category:"Mains",active:true},
+{id:"2",name:"Example Drink",price:5,category:"Drinks",active:true}
+],orders:[],openOrders:[],nextOrder:1});
+let data=load(),cart=[],category="All",editingId=null,paymentMethod=null,currentPage="sale";
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||defaultData()}catch(e){return defaultData()}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function setPage(p){currentPage=p;document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===p));document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===p));renderAll()}
+function renderAll(){ $("businessTitle").textContent=data.businessName||"Simple POS"; if(currentPage==="sale")renderSale(); if(currentPage==="orders")renderOpen(); if(currentPage==="daily")renderDaily(); if(currentPage==="reports")renderReports(); if(currentPage==="menu")renderMenu(); if(currentPage==="settings")renderSettings() }
+
+function renderSale(){
+ const cats=["All",...new Set(data.menu.filter(i=>i.active).map(i=>i.category).filter(Boolean))];
+ $("saleCategories").innerHTML=cats.map(c=>`<button class="pill ${c===category?"active":""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("");
+ $("saleCategories").querySelectorAll("button").forEach(b=>b.onclick=()=>{category=b.dataset.cat;renderSale()});
+ const items=data.menu.filter(i=>i.active&&(category==="All"||i.category===category));
+ $("saleMenu").innerHTML=items.length?items.map(i=>`<button onclick="addItem('${i.id}')"><strong>${esc(i.name)}</strong><span>${money(i.price)}</span></button>`).join(""):`<div class="empty">No menu items in this category.</div>`;
+ $("cart").innerHTML=cart.length?cart.map((i,n)=>`<div class="cart-row"><div><strong>${esc(i.name)}</strong><div class="small muted">${money(i.price)} each</div></div><div class="qty"><button onclick="changeQty(${n},-1)">−</button><b>${i.qty}</b><button onclick="changeQty(${n},1)">+</button></div></div>`).join(""):`<div class="empty">Tap an item to start the order.</div>`;
+ $("cartTotal").textContent=money(cart.reduce((s,i)=>s+i.price*i.qty,0));
+}
+function addItem(id){let m=data.menu.find(x=>x.id===id);if(!m)return;let x=cart.find(i=>i.id===id);x?x.qty++:cart.push({id:m.id,name:m.name,price:m.price,qty:1});renderSale()}
+function changeQty(n,d){cart[n].qty+=d;if(cart[n].qty<=0)cart.splice(n,1);renderSale()}
+function cartTotal(){return cart.reduce((s,i)=>s+i.price*i.qty,0)}
+function saveOpen(){if(!cart.length)return alert("Add an item first.");data.openOrders.push({id:uid(),number:data.nextOrder++,createdAt:new Date().toISOString(),items:cart.map(x=>({...x})),total:cartTotal()});save();cart=[];renderAll();alert("Order saved.");}
+function openPayment(order=null){if(!order&&!cart.length)return alert("Add an item first.");window.paymentOrder=order;paymentMethod=null;$("payTotal").textContent=money(order?order.total:cartTotal());$("recordPayment").disabled=true;$("paymentModal").classList.add("show");document.querySelectorAll(".pay-grid button").forEach(b=>b.classList.remove("selected"))}
+function closePayment(){$("paymentModal").classList.remove("show")}
+function recordPayment(){if(!paymentMethod)return;let o=window.paymentOrder;if(o){data.openOrders=data.openOrders.filter(x=>x.id!==o.id)}else{o={number:data.nextOrder++,createdAt:new Date().toISOString(),items:cart.map(x=>({...x})),total:cartTotal()};cart=[]}o.paidAt=new Date().toISOString();o.paymentMethod=paymentMethod;data.orders.push(o);save();closePayment();renderAll();alert(`Payment recorded: ${paymentMethod}`)}
+function renderOpen(){
+ const a=data.openOrders;
+ $("openOrders").innerHTML=a.length?a.map(o=>`<div class="order-row"><div><strong>Order #${o.number}</strong><div class="small muted">${fmtTime(o.createdAt)} · ${itemsText(o.items)}</div></div><div style="text-align:right"><strong>${money(o.total)}</strong><div class="actions" style="justify-content:flex-end;margin-top:6px"><button class="secondary" onclick="resumeOrder('${o.id}')">Open</button><button class="secondary" onclick="openPayment(data.openOrders.find(x=>x.id==='${o.id}'))">Take payment</button><button class="danger" onclick="deleteOpen('${o.id}')">Delete</button></div></div></div>`).join(""):`<div class="empty">No open orders.</div>`;
+}
+function resumeOrder(id){let o=data.openOrders.find(x=>x.id===id);if(!o)return;cart=o.items.map(x=>({...x}));data.openOrders=data.openOrders.filter(x=>x.id!==id);save();setPage("sale")}
+function deleteOpen(id){if(confirm("Delete this open order?")){data.openOrders=data.openOrders.filter(x=>x.id!==id);save();renderOpen()}}
+function ordersForDate(d){return data.orders.filter(o=>o.paidAt?.slice(0,10)===d)}
+function dailyStats(orders){return {sales:orders.reduce((s,o)=>s+o.total,0),orders:orders.length,items:orders.reduce((s,o)=>s+o.items.reduce((a,i)=>a+i.qty,0),0)}}
+function renderDaily(){
+ const d=$("dailyDate").value||today();$("dailyDate").value=d;const os=ordersForDate(d),s=dailyStats(os);
+ const methods={};const items={};os.forEach(o=>{methods[o.paymentMethod]=(methods[o.paymentMethod]||0)+o.total;o.items.forEach(i=>items[i.name]=(items[i.name]||0)+i.qty)});
+ $("dailyReport").innerHTML=`<div class="card"><h2>${data.businessName||"Business"} — End of Day Report</h2><p class="muted">${formatDate(d)}</p>
+ <div class="stats"><div class="stat">Sales<b>${money(s.sales)}</b></div><div class="stat">Orders<b>${s.orders}</b></div><div class="stat">Average order<b>${money(s.orders?s.sales/s.orders:0)}</b></div><div class="stat">Items sold<b>${s.items}</b></div></div>
+ <h3 style="margin-top:22px">Transactions</h3>${os.length?`<div class="table-wrap"><table><thead><tr><th>Order</th><th>Time</th><th>Purchased</th><th>Payment</th><th>Total</th></tr></thead><tbody>${os.map(o=>`<tr><td>#${o.number}</td><td>${fmtTime(o.paidAt)}</td><td>${itemsText(o.items)}</td><td>${esc(o.paymentMethod)}</td><td>${money(o.total)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="empty">No completed transactions for this date.</div>`}
+ <h3 style="margin-top:22px">Payment totals</h3>${totalsTable(methods,"Payment method")}
+ <h3 style="margin-top:22px">Items sold</h3>${totalsTable(items,"Item",true)}
+ <div class="print-only"><p>Generated ${new Date().toLocaleString("en-NZ")}</p></div></div>`;
+}
+function totalsTable(obj,label,qty=false){let keys=Object.keys(obj).sort((a,b)=>obj[b]-obj[a]);return keys.length?`<div class="table-wrap"><table><thead><tr><th>${label}</th><th>Total</th></tr></thead><tbody>${keys.map(k=>`<tr><td>${esc(k)}</td><td>${qty?obj[k]:money(obj[k])}</td></tr>`).join("")}</tbody></table></div>`:`<div class="muted small">None.</div>`}
+function renderReports(){
+ const days=Number($("reportRange").value),end=new Date(),start=new Date(end);start.setDate(start.getDate()-days+1);
+ const os=data.orders.filter(o=>new Date(o.paidAt)>=start&&new Date(o.paidAt)<=end),s=dailyStats(os),items={},methods={},byDay={};
+ os.forEach(o=>{methods[o.paymentMethod]=(methods[o.paymentMethod]||0)+o.total;o.items.forEach(i=>items[i.name]=(items[i.name]||0)+i.qty);let d=o.paidAt.slice(0,10);byDay[d]=(byDay[d]||0)+o.total});
+ const top=Object.entries(items).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ const activeDays=Object.keys(byDay).length;
+ const bestDay=Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
+ $("reportsContent").innerHTML=`<div class="card"><h2>Sales overview</h2><p class="muted">Last ${days} days</p><div class="stats">
+ <div class="stat">Total sales<b>${money(s.sales)}</b></div><div class="stat">Orders<b>${s.orders}</b></div><div class="stat">Average order<b>${money(s.orders?s.sales/s.orders:0)}</b></div><div class="stat">Items sold<b>${s.items}</b></div></div>
+ <div class="stats" style="margin-top:10px"><div class="stat">Active sales days<b>${activeDays}</b></div><div class="stat">Avg sales / active day<b>${money(activeDays?s.sales/activeDays:0)}</b></div><div class="stat">Top item<b>${top[0]?esc(top[0][0]):"—"}</b></div><div class="stat">Best day<b>${bestDay?formatDate(bestDay[0]):"—"}</b></div></div>
+ <div class="grid two" style="margin-top:18px"><div><h3>Most sold items</h3>${top.length?`<table><thead><tr><th>Item</th><th>Qty</th></tr></thead><tbody>${top.map(x=>`<tr><td>${esc(x[0])}</td><td>${x[1]}</td></tr>`).join("")}</tbody></table>`:`<div class="empty">No sales yet.</div>`}</div>
+ <div><h3>Payment methods</h3>${totalsTable(methods,"Method")}</div></div>
+ <h3 style="margin-top:24px">Daily performance</h3>${dailyPerformance(byDay)}</div>`;
+}
+function dailyPerformance(byDay){let dates=Object.keys(byDay).sort().reverse();return dates.length?`<div class="table-wrap"><table><thead><tr><th>Date</th><th>Orders</th><th>Sales</th><th>Average order</th></tr></thead><tbody>${dates.map(d=>{let o=ordersForDate(d),s=dailyStats(o);return`<tr><td>${formatDate(d)}</td><td>${s.orders}</td><td>${money(s.sales)}</td><td>${money(s.orders?s.sales/s.orders:0)}</td></tr>`}).join("")}</tbody></table></div>`:`<div class="empty">No completed sales in this period.</div>`}
+function renderMenu(){
+ $("menuList").innerHTML=data.menu.length?data.menu.map(i=>`<div class="menu-row"><div><strong>${esc(i.name)}</strong><div class="small muted">${esc(i.category||"Uncategorised")} · ${money(i.price)} · ${i.active?"Visible":"Hidden"}</div></div><div class="actions"><button class="secondary" onclick="editItem('${i.id}')">Edit</button><button class="secondary" onclick="toggleItem('${i.id}')">${i.active?"Hide":"Show"}</button></div></div>`).join(""):`<div class="empty">No menu items yet.</div>`;
+}
+function renderSettings(){$("businessName").value=data.businessName||""}
+function editItem(id){let i=data.menu.find(x=>x.id===id);if(!i)return;editingId=id;$("menuFormTitle").textContent="Edit menu item";$("itemName").value=i.name;$("itemPrice").value=i.price;$("itemCategory").value=i.category||"";$("saveItem").textContent="Save changes";$("cancelEdit").style.display="block"}
+function resetForm(){editingId=null;$("menuFormTitle").textContent="Add menu item";$("itemName").value="";$("itemPrice").value="";$("itemCategory").value="";$("saveItem").textContent="Add item";$("cancelEdit").style.display="none"}
+function saveItem(){let name=$("itemName").value.trim(),price=Number($("itemPrice").value),cat=$("itemCategory").value.trim()||"Other";if(!name||!(price>=0))return alert("Please enter an item name and valid price.");if(editingId){let i=data.menu.find(x=>x.id===editingId);Object.assign(i,{name,price,category:cat})}else data.menu.push({id:uid(),name,price,category:cat,active:true});save();resetForm();renderMenu();alert("Menu item saved.")}
+function toggleItem(id){let i=data.menu.find(x=>x.id===id);if(i){i.active=!i.active;save();renderMenu()}}
+function exportData(){let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`pos-backup-${today()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function importDataFile(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!x.menu||!x.orders||!x.openOrders)throw Error();data=x;save();cart=[];renderAll();alert("Backup imported.")}catch(err){alert("That backup file could not be imported.")}};r.readAsText(f);e.target.value=""}
+function clearSales(){if(confirm("This will permanently delete all completed and open sales from this iPad. Continue?")){data.orders=[];data.openOrders=[];save();renderAll()}}
+function fmtTime(x){return new Date(x).toLocaleTimeString("en-NZ",{hour:"2-digit",minute:"2-digit"})}
+function formatDate(x){return new Date(x+"T00:00:00").toLocaleDateString("en-NZ",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}
+function itemsText(items){return items.map(i=>`${i.qty}× ${i.name}`).join(", ")}
+function esc(x){return String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+$("clearCart").onclick=()=>{cart=[];renderSale()};
+$("saveOrder").onclick=saveOpen;
+$("payNow").onclick=()=>openPayment();
+$("closePay").onclick=closePayment;
+document.querySelectorAll(".pay-grid button").forEach(b=>b.onclick=()=>{paymentMethod=b.dataset.method;document.querySelectorAll(".pay-grid button").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");$("recordPayment").disabled=false});
+$("recordPayment").onclick=recordPayment;
+$("dailyDate").onchange=renderDaily;
+$("todayBtn").onclick=()=>{$("dailyDate").value=today();renderDaily()};
+$("printDaily").onclick=()=>window.print();
+$("reportRange").onchange=renderReports;
+$("saveItem").onclick=saveItem;
+$("cancelEdit").onclick=resetForm;
+$("saveBusiness").onclick=()=>{data.businessName=$("businessName").value.trim()||"My Business";save();renderAll()};
+$("exportData").onclick=exportData;
+$("importData").onchange=importDataFile;
+$("clearSales").onclick=clearSales;
+
+window.addItem=addItem;window.changeQty=changeQty;window.openPayment=openPayment;window.resumeOrder=resumeOrder;window.deleteOpen=deleteOpen;window.editItem=editItem;window.toggleItem=toggleItem;window.data=data;
+
+$("dailyDate").value=today();
+setPage("sale");
+function online(){ $("onlineStatus").textContent=navigator.onLine?"Online":"Offline ready" }
+window.addEventListener("online",online);window.addEventListener("offline",online);online();
+
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+</script>
+</body>
+</html>
